@@ -135,6 +135,19 @@ p  { font-size: 0.96rem; color: var(--graphite-soft); font-weight: 300; margin-b
     border-color: var(--white);
 }
 
+.btn-outline-gold {
+    background-color: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+}
+.btn-outline-gold:hover {
+    background-color: var(--gold);
+    color: var(--white);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+
 .btn-cta-final {
     display: inline-flex;
     align-items: center;

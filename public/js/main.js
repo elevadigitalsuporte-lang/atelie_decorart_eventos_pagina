@@ -74,7 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const masonryGrid = document.getElementById('masonry-grid');
+    const loadMoreBtn = document.getElementById('btn-load-more');
+    const loadMoreContainer = document.getElementById('gallery-load-more-container');
     let likedImages = JSON.parse(localStorage.getItem('decorart_liked_images')) || {};
+
+    const ITEMS_PER_PAGE = 10;
+    let renderedCount = 0;
 
     // Geração de curtidas iniciais persistentes baseadas no nome do arquivo
     function getStableLikes(filename) {
@@ -127,10 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Renderização dos cards da galeria
-    if (masonryGrid) {
-        masonryGrid.innerHTML = '';
-        GALLERY_IMAGES.forEach((filename, i) => {
+    // Renderização parcial dos cards da galeria
+    function renderGalleryItems(start, count) {
+        const end = Math.min(start + count, GALLERY_IMAGES.length);
+        for (let i = start; i < end; i++) {
+            const filename = GALLERY_IMAGES[i];
             const sizeClass = (i % 3 === 0) ? 'tall' : (i % 7 === 0) ? 'wide' : '';
             const baseLikes = getStableLikes(filename);
             const isLiked = !!likedImages[filename];
@@ -172,7 +178,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             masonryGrid.appendChild(item);
-        });
+        }
+        renderedCount = end;
+
+        // Se renderizou todas as fotos, remove/esconde o botão
+        if (renderedCount >= GALLERY_IMAGES.length) {
+            if (loadMoreContainer) {
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+    }
+
+    if (masonryGrid) {
+        masonryGrid.innerHTML = '';
+        renderGalleryItems(0, ITEMS_PER_PAGE);
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                // Carrega todas as fotos restantes
+                renderGalleryItems(renderedCount, GALLERY_IMAGES.length - renderedCount);
+            });
+        }
     }
 
     /* ── 5. LIGHTBOX ────────────────────────────────────── */
