@@ -57,40 +57,123 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealEls.forEach(el => revealObserver.observe(el));
 
-    /* ── 4. GALLERY FILTER ──────────────────────────────── */
-    const filterBtns  = document.querySelectorAll('.filter-btn');
-    const galleryItems = document.querySelectorAll('.masonry-item');
+    /* ── 4. DYNAMIC GALLERY WITH LIKES SYSTEM ────────────── */
+    const GALLERY_IMAGES = [
+        "DSC00690-1049.jpg", "DSC00978-1213.jpg", "DSC00982-1214.jpg", "DSC06918-268.jpg", "DSC06941-275.jpg",
+        "DSC06986-293.jpg", "DSC06997-299.jpg", "DSC07065-327.jpg", "DSC07092-365.jpg", "DSC07112-380.jpg",
+        "DSC07132-403.jpg", "DSC07160-423.jpg", "DSC07165-425.jpg", "DSC07176-429.jpg", "DSC07178-433.jpg",
+        "DSC07198-444.jpg", "DSC07199-445.jpg", "DSC07226-463.jpg", "DSC07265-485.jpg", "DSC07277-493.jpg",
+        "DSC07293-501.jpg", "DSC07300-508.jpg", "DSC07301-510.jpg", "DSC07310-519.jpg", "DSC07381-566.jpg",
+        "DSC07411-575.jpg", "DSC07913-774.jpg", "DSC08043-844.jpg", "DSC08107-862.jpg", "DSC08138-873.jpg",
+        "DSC08193-885.jpg", "DSC08371-940.jpg", "DSC08382-942.jpg", "DSC08507-978.jpg", "DSC08508-979.jpg",
+        "DSC08509-980.jpg", "DSC08511-981.jpg", "DSC08513-982.jpg", "DSC08555-998.jpg", "DSC08568-1005.jpg",
+        "DSC08571-1007.jpg", "DSC08813-1099.jpg", "DSC08875-1133.jpg", "DSC08882-1139.jpg", "DSC08894-1142.jpg",
+        "DSC08948-1212.jpg", "DSC08956-1220.jpg", "DSC09008-1244.jpg", "DSC09009-1245.jpg", "DSC09050-1267.jpg",
+        "DSC09079-1275.jpg", "DSC09080-1276.jpg", "DSC09139-1278.jpg", "DSC09665-430.jpg", "DSC09773-496.jpg",
+        "DSC09807-520.jpg"
+    ];
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    const masonryGrid = document.getElementById('masonry-grid');
+    let likedImages = JSON.parse(localStorage.getItem('decorart_liked_images')) || {};
 
-            const filter = btn.dataset.filter;
+    // Geração de curtidas iniciais persistentes baseadas no nome do arquivo
+    function getStableLikes(filename) {
+        let hash = 0;
+        for (let i = 0; i < filename.length; i++) {
+            hash = filename.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return 45 + Math.abs(hash % 145); // Entre 45 e 189 curtidas estáveis
+    }
 
-            galleryItems.forEach(item => {
-                const cat = item.dataset.category;
-                const shouldShow = (filter === 'all' || cat === filter);
+    function toggleLike(filename) {
+        if (likedImages[filename]) {
+            delete likedImages[filename];
+        } else {
+            likedImages[filename] = true;
+        }
+        localStorage.setItem('decorart_liked_images', JSON.stringify(likedImages));
+        updateLikeUI(filename);
+    }
 
-                if (shouldShow) {
-                    item.classList.remove('hidden');
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateY(14px)';
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            item.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
-                            item.style.opacity    = '1';
-                            item.style.transform  = 'translateY(0)';
-                        });
-                    });
-                } else {
-                    item.style.transition = 'opacity 0.35s ease';
-                    item.style.opacity    = '0';
-                    setTimeout(() => item.classList.add('hidden'), 350);
+    function updateLikeUI(filename) {
+        const isLiked = !!likedImages[filename];
+        const baseLikes = getStableLikes(filename);
+        const totalLikes = baseLikes + (isLiked ? 1 : 0);
+
+        // Atualiza o botão no card da galeria
+        const cardBtn = document.querySelector(`.like-btn[data-filename="${filename}"]`);
+        if (cardBtn) {
+            cardBtn.classList.toggle('liked', isLiked);
+            const icon = cardBtn.querySelector('i');
+            if (icon) {
+                icon.className = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+            }
+            const countSpan = cardBtn.querySelector('.like-count');
+            if (countSpan) countSpan.textContent = totalLikes;
+        }
+
+        // Atualiza o botão no Lightbox se for a imagem ativa
+        if (lightbox && lightbox.classList.contains('open') && activeFilename === filename) {
+            const lbBtn = document.getElementById('lightbox-like-btn');
+            if (lbBtn) {
+                lbBtn.classList.toggle('liked', isLiked);
+                const lbIcon = lbBtn.querySelector('i');
+                if (lbIcon) {
+                    lbIcon.className = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
                 }
+                const lbCountSpan = lbBtn.querySelector('.lightbox-like-count');
+                if (lbCountSpan) lbCountSpan.textContent = totalLikes;
+            }
+        }
+    }
+
+    // Renderização dos cards da galeria
+    if (masonryGrid) {
+        masonryGrid.innerHTML = '';
+        GALLERY_IMAGES.forEach((filename, i) => {
+            const sizeClass = (i % 3 === 0) ? 'tall' : (i % 7 === 0) ? 'wide' : '';
+            const baseLikes = getStableLikes(filename);
+            const isLiked = !!likedImages[filename];
+            const totalLikes = baseLikes + (isLiked ? 1 : 0);
+            const heartClass = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+            const likedBtnClass = isLiked ? 'gallery-action-btn like-btn liked' : 'gallery-action-btn like-btn';
+
+            const item = document.createElement('div');
+            item.className = `masonry-item ${sizeClass}`;
+            item.dataset.index = i;
+            item.dataset.filename = filename;
+            item.innerHTML = `
+                <img src="public/images/${filename}" alt="Decoração de Casamento de Alto Padrão - Ateliê Decorart" loading="lazy">
+                <div class="masonry-overlay">
+                    <span>Casamento</span>
+                    <div class="gallery-actions">
+                        <button class="${likedBtnClass}" data-filename="${filename}" title="Curtir foto">
+                            <i class="${heartClass}"></i>
+                            <span class="like-count">${totalLikes}</span>
+                        </button>
+                        <button class="gallery-action-btn zoom-btn" title="Ampliar foto">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Clique na imagem (abre o lightbox)
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.like-btn')) return;
+                openLightbox(i);
             });
+
+            // Clique no botão de curtidas
+            const likeBtn = item.querySelector('.like-btn');
+            likeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleLike(filename);
+            });
+
+            masonryGrid.appendChild(item);
         });
-    });
+    }
 
     /* ── 5. LIGHTBOX ────────────────────────────────────── */
     const lightbox     = document.getElementById('lightbox');
@@ -99,18 +182,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const lbClose      = document.getElementById('lightbox-close');
     const lbPrev       = document.getElementById('lightbox-prev');
     const lbNext       = document.getElementById('lightbox-next');
+    const lbLikeBtn    = document.getElementById('lightbox-like-btn');
 
     let activeIndex    = 0;
-    let visibleItems   = [];
+    let activeFilename = '';
 
     function openLightbox(index) {
-        visibleItems = [...document.querySelectorAll('.masonry-item:not(.hidden)')];
         activeIndex  = index;
-        const item   = visibleItems[activeIndex];
-        const img    = item.querySelector('img');
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
-        lightboxCap.textContent = item.querySelector('.masonry-overlay span')?.textContent || '';
+        activeFilename = GALLERY_IMAGES[activeIndex];
+        lightboxImg.src = `public/images/${activeFilename}`;
+        lightboxImg.alt = "Casamento de Alto Padrão - Ateliê Decorart";
+        if (lightboxCap) lightboxCap.textContent = "Casamento - Ateliê Decorart";
+        
+        updateLikeUI(activeFilename);
+        
         lightbox.classList.add('open');
         document.body.style.overflow = 'hidden';
     }
@@ -122,32 +207,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function navigateLightbox(dir) {
-        activeIndex = (activeIndex + dir + visibleItems.length) % visibleItems.length;
-        const item  = visibleItems[activeIndex];
-        const img   = item.querySelector('img');
+        activeIndex = (activeIndex + dir + GALLERY_IMAGES.length) % GALLERY_IMAGES.length;
+        activeFilename = GALLERY_IMAGES[activeIndex];
+        
         lightboxImg.style.opacity = '0';
         lightboxImg.style.transform = `translateX(${dir > 0 ? '15px' : '-15px'})`;
+        
         setTimeout(() => {
-            lightboxImg.src = img.src;
-            lightboxImg.alt = img.alt;
-            lightboxCap.textContent = item.querySelector('.masonry-overlay span')?.textContent || '';
+            lightboxImg.src = `public/images/${activeFilename}`;
+            if (lightboxCap) lightboxCap.textContent = "Casamento - Ateliê Decorart";
+            updateLikeUI(activeFilename);
             lightboxImg.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
             lightboxImg.style.opacity   = '1';
             lightboxImg.style.transform = 'translateX(0)';
         }, 250);
     }
 
-    galleryItems.forEach((item, i) => {
-        item.addEventListener('click', () => openLightbox(i));
-    });
-
-    lbClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
-    lbPrev.addEventListener('click', () => navigateLightbox(-1));
-    lbNext.addEventListener('click', () => navigateLightbox(1));
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lightbox) {
+        lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    }
+    if (lbPrev) lbPrev.addEventListener('click', () => navigateLightbox(-1));
+    if (lbNext) lbNext.addEventListener('click', () => navigateLightbox(1));
+    if (lbLikeBtn) {
+        lbLikeBtn.addEventListener('click', () => {
+            toggleLike(activeFilename);
+        });
+    }
 
     document.addEventListener('keydown', e => {
-        if (!lightbox.classList.contains('open')) return;
+        if (!lightbox || !lightbox.classList.contains('open')) return;
         if (e.key === 'Escape')    closeLightbox();
         if (e.key === 'ArrowLeft') navigateLightbox(-1);
         if (e.key === 'ArrowRight') navigateLightbox(1);

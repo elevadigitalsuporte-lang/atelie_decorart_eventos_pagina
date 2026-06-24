@@ -122,40 +122,9 @@
                 <p class="subtitle">Cada imagem carrega uma história única de perfeição e alegria. Inspire-se.</p>
             </div>
 
-            <!-- Filtros da Galeria -->
-            <div class="gallery-filters reveal">
-                <button class="filter-btn active" data-filter="all" id="filter-all">Todos</button>
-                <button class="filter-btn" data-filter="casamentos" id="filter-casamentos">Casamentos</button>
-                <button class="filter-btn" data-filter="debutantes" id="filter-debutantes">Debutantes</button>
-                <button class="filter-btn" data-filter="corporativo" id="filter-corporativo">Corporativo</button>
-            </div>
-
             <!-- Grid Masonry -->
-            <div class="masonry-grid" id="masonry-grid">
-                <div class="masonry-item" data-category="casamentos" id="gallery-item-1">
-                    <img src="public/images/wedding.png" alt="Casamento elegante decorado pela Ateliê Decorart" loading="lazy">
-                    <div class="masonry-overlay"><span>Casamentos</span><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                </div>
-                <div class="masonry-item tall" data-category="debutantes" id="gallery-item-2">
-                    <img src="public/images/debutante.png" alt="Festa de debutante pela Ateliê Decorart" loading="lazy">
-                    <div class="masonry-overlay"><span>Debutantes</span><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                </div>
-                <div class="masonry-item" data-category="corporativo" id="gallery-item-3">
-                    <img src="public/images/corporate.png" alt="Evento corporativo pela Ateliê Decorart" loading="lazy">
-                    <div class="masonry-overlay"><span>Corporativo</span><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                </div>
-                <div class="masonry-item wide" data-category="casamentos" id="gallery-item-4">
-                    <img src="public/images/hero-decorart.jpeg" alt="Salão decorado para casamento" loading="lazy">
-                    <div class="masonry-overlay"><span>Casamentos</span><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                </div>
-                <div class="masonry-item" data-category="debutantes" id="gallery-item-5">
-                    <img src="public/images/hero.png" alt="Cenografia para debutante" loading="lazy">
-                    <div class="masonry-overlay"><span>Debutantes</span><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                </div>
-                <div class="masonry-item tall" data-category="casamentos" id="gallery-item-6">
-                    <img src="public/images/wedding.png" alt="Recepção de casamento" loading="lazy">
-                    <div class="masonry-overlay"><span>Casamentos</span><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                </div>
+            <div class="masonry-grid reveal" id="masonry-grid">
+                <!-- Populada dinamicamente via JavaScript com as novas fotos e sistema de curtidas -->
             </div>
 
             <div class="gallery-cta text-center reveal">
@@ -174,7 +143,13 @@
         <div class="lightbox-img-wrap">
             <img src="" alt="Galeria Ateliê Decorart" id="lightbox-img">
         </div>
-        <span class="lightbox-caption" id="lightbox-caption"></span>
+        <div class="lightbox-info">
+            <span class="lightbox-caption" id="lightbox-caption"></span>
+            <button class="lightbox-like-btn" id="lightbox-like-btn" aria-label="Curtir esta foto">
+                <i class="fa-regular fa-heart"></i>
+                <span class="lightbox-like-count">0</span>
+            </button>
+        </div>
     </div>
 
     <!-- ===== SEÇÃO 4: PROVA SOCIAL (DEPOIMENTOS) ===== -->
