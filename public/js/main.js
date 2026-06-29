@@ -59,18 +59,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ── 4. DYNAMIC GALLERY WITH LIKES SYSTEM ────────────── */
     const GALLERY_IMAGES = [
-        "DSC00690-1049.jpg", "DSC00978-1213.jpg", "DSC00982-1214.jpg", "DSC06918-268.jpg", "DSC06941-275.jpg",
-        "DSC06986-293.jpg", "DSC06997-299.jpg", "DSC07065-327.jpg", "DSC07092-365.jpg", "DSC07112-380.jpg",
-        "DSC07132-403.jpg", "DSC07160-423.jpg", "DSC07165-425.jpg", "DSC07176-429.jpg", "DSC07178-433.jpg",
-        "DSC07198-444.jpg", "DSC07199-445.jpg", "DSC07226-463.jpg", "DSC07265-485.jpg", "DSC07277-493.jpg",
-        "DSC07293-501.jpg", "DSC07300-508.jpg", "DSC07301-510.jpg", "DSC07310-519.jpg", "DSC07381-566.jpg",
-        "DSC07411-575.jpg", "DSC07913-774.jpg", "DSC08043-844.jpg", "DSC08107-862.jpg", "DSC08138-873.jpg",
-        "DSC08193-885.jpg", "DSC08371-940.jpg", "DSC08382-942.jpg", "DSC08507-978.jpg", "DSC08508-979.jpg",
-        "DSC08509-980.jpg", "DSC08511-981.jpg", "DSC08513-982.jpg", "DSC08555-998.jpg", "DSC08568-1005.jpg",
-        "DSC08571-1007.jpg", "DSC08813-1099.jpg", "DSC08875-1133.jpg", "DSC08882-1139.jpg", "DSC08894-1142.jpg",
-        "DSC08948-1212.jpg", "DSC08956-1220.jpg", "DSC09008-1244.jpg", "DSC09009-1245.jpg", "DSC09050-1267.jpg",
-        "DSC09079-1275.jpg", "DSC09080-1276.jpg", "DSC09139-1278.jpg", "DSC09665-430.jpg", "DSC09773-496.jpg",
-        "DSC09807-520.jpg"
+        // Fotos profissionais
+        "DSC06941-275.jpg", "DSC07065-327.jpg", "DSC07293-501.jpg", "DSC07301-510.jpg",
+        "DSC07310-519.jpg", "DSC07913-774.jpg", "DSC08507-978.jpg", "DSC08508-979.jpg",
+        "DSC08509-980.jpg", "DSC08511-981.jpg", "DSC08513-982.jpg", "DSC08555-998.jpg",
+        "DSC08571-1007.jpg", "DSC09773-496.jpg",
+        // Novas fotos
+        "WhatsApp Image 2026-06-24 at 18.25.43.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.44 (2).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.44.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.45 (1).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.45.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.48.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.49 (1).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.50 (2).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.50.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.58 (1).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.58.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.25.59.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.00 (1).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.00 (3).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.00.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.01 (1).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.01 (3).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.01.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.02.jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.05 (2).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.05 (3).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.06 (1).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.06 (2).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.07 (2).jpeg",
+        "WhatsApp Image 2026-06-24 at 18.26.08.jpeg"
     ];
 
     const masonryGrid = document.getElementById('masonry-grid');
